@@ -7,6 +7,10 @@ export default function Card({ details }) {
   Card.PropsTypes = {
     details: PropTypes.object,
   };
+
+  function isEmpty(value) {
+    return value ? value : "N/A";
+  }
   return (
     <StyledCard>
       <img
@@ -18,26 +22,9 @@ export default function Card({ details }) {
         alt="Book Photo"
       />
       <div>
-        {details.volumeInfo.categories ? (
-          <p>{details.volumeInfo.categories}</p>
-        ) : (
-          <p>N/A</p>
-        )}
-        {details.volumeInfo.title ? (
-          <p>{details.volumeInfo.title}</p>
-        ) : (
-          <p>N/A</p>
-        )}
-        {details.volumeInfo.authors ? (
-          <p>{details.volumeInfo.authors}</p>
-        ) : (
-          <p>N/A</p>
-        )}
-        {details.searchInfo.textSnippet ? (
-          <p>{details.searchInfo.textSnippet}</p>
-        ) : (
-          <p>N/A</p>
-        )}
+        <p>{isEmpty(details.volumeInfo.title)}</p>
+        <p>{isEmpty(details.volumeInfo.authors)}</p>
+        <p>{isEmpty(details.searchInfo.textSnippet)}</p>
       </div>
     </StyledCard>
   );
