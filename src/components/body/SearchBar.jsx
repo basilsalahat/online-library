@@ -1,5 +1,6 @@
-/* eslint-disable react/prop-types */
-import { StyledSearchBar } from "./SearchBar.styled";
+import { useState } from "react";
+import instance from "../../ConfigAPI/config";
+import PropTypes from "prop-types";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -8,12 +9,14 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
-import { useState } from "react";
-import axios from "axios";
+import { StyledSearchBar } from "./SearchBar.styled";
 
 export default function SearchBar({ result }) {
+  SearchBar.propTypes = {
+    result: PropTypes.object,
+  };
   const [text, setText] = useState("");
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState("default");
   const [error, setError] = useState(false);
 
   function handleSearch() {
@@ -27,20 +30,16 @@ export default function SearchBar({ result }) {
       } else {
         searchText = text.concat("+", filter);
       }
-      axios
-        .get("https://www.googleapis.com/books/v1/volumes", {
-          params: { q: searchText },
-        })
+      instance
+        .get("?q=" + searchText)
         .then(function (response) {
           result([...response.data.items]);
-          console.log(response.data.items);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
   }
-
   return (
     <StyledSearchBar>
       <OutlinedInput
@@ -55,6 +54,9 @@ export default function SearchBar({ result }) {
         onInput={(e) => setText(e.target.value)}
         value={text}
         error={error}
+        onKeyDown={(e) => {
+          e.key == "Enter" && handleSearch();
+        }}
       />
       <FormControl fullWidth>
         <InputLabel id="search-by-label">Search by</InputLabel>

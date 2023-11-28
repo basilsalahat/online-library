@@ -3,6 +3,7 @@ import { StyledCardsContainer } from "./Card.styled";
 import SearchBar from "./SearchBar";
 import { useState } from "react";
 import Card from "./Card";
+import { StyledContent } from "./Content.styled";
 
 export default function Body() {
   const [books, setBooks] = useState([]);
@@ -14,23 +15,13 @@ export default function Body() {
   return (
     <StyledBody>
       <SearchBar result={handleState} />
-      <StyledCardsContainer>
-        {books.map((ele, i) => {
-          return (
-            <Card
-              key={i}
-              author={ele.volumeInfo.authors}
-              title={ele.volumeInfo.title}
-              category={ele.volumeInfo.categories}
-              image={
-                ele.volumeInfo.imageLinks == undefined
-                  ? "../../../public/images/no-image.png"
-                  : ele.volumeInfo.imageLinks.thumbnail
-              }
-            />
-          );
-        })}
-      </StyledCardsContainer>
+      <StyledContent>
+        <StyledCardsContainer>
+          {books.map((ele, i) => {
+            return <Card key={i} details={ele} />;
+          })}
+        </StyledCardsContainer>
+      </StyledContent>
     </StyledBody>
   );
 }

@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 export const StyledCardsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-auto-rows: max-content;
   gap: 22px;
   justify-items: start;
 `;
@@ -34,6 +35,10 @@ export const StyledCard = styled.div`
     & p:nth-child(2) {
       color: gray;
       margin: 0;
+    }
+    & p:nth-child(4) {
+      text-overflow: ellipsis;
+      padding-top: 12px;
     }
   }
   transition: 250ms transform ease-in-out, box-shadow 250ms;
