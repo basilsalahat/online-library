@@ -9,7 +9,7 @@ export default function Card({ details }) {
   };
 
   function isEmpty(value) {
-    return value ? value : "N/A";
+    return value ? value.toString().toLowerCase() : "N/A";
   }
   return (
     <StyledCard>
@@ -22,9 +22,14 @@ export default function Card({ details }) {
         alt="Book Photo"
       />
       <div>
+        <p>{isEmpty(details.volumeInfo.categories)}</p>
         <p>{isEmpty(details.volumeInfo.title)}</p>
         <p>{isEmpty(details.volumeInfo.authors)}</p>
-        <p>{isEmpty(details.searchInfo.textSnippet)}</p>
+        <p>
+          {!details.searchInfo
+            ? "There is no description"
+            : details.searchInfo.textSnippet}
+        </p>
       </div>
     </StyledCard>
   );

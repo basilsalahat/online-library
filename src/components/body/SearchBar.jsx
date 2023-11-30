@@ -13,7 +13,7 @@ import { StyledSearchBar } from "./SearchBar.styled";
 
 export default function SearchBar({ result }) {
   SearchBar.propTypes = {
-    result: PropTypes.object,
+    result: PropTypes.func,
   };
   const [text, setText] = useState("");
   const [filter, setFilter] = useState("default");
@@ -33,7 +33,12 @@ export default function SearchBar({ result }) {
       instance
         .get("?q=" + searchText)
         .then(function (response) {
-          result([...response.data.items]);
+          result(
+            [...response.data.items],
+            searchText,
+            response.data.totalItems
+          );
+          setText("");
         })
         .catch(function (error) {
           console.log(error);
