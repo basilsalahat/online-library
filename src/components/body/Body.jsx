@@ -48,7 +48,7 @@ export default function Body() {
         {resultInfo["text"] && (
           <div className="resultInfoContainer">
             <h1>
-              {resultInfo["text"]}
+              {resultInfo["text"].toString().split("+")[0]}
               <span>&nbsp;[{resultInfo["num"]}]</span>
             </h1>
             <Button

@@ -38,7 +38,6 @@ export default function SearchBar({ result }) {
             searchText,
             response.data.totalItems
           );
-          setText("");
         })
         .catch(function (error) {
           console.log(error);

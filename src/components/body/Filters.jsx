@@ -4,10 +4,11 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
-import Button from "@mui/material/Button";
 import { StyledFilter } from "./Filters.styled";
+import { useState } from "react";
 
 export default function Filters({ filtersData, updateBooks, filtersState }) {
+  const [showAllState, setShowAllState] = useState(true);
   function searchItem(value, category) {
     Object.entries(filtersData[category]).forEach((e) => {
       if (e[0] == value) {
@@ -17,59 +18,57 @@ export default function Filters({ filtersData, updateBooks, filtersState }) {
   }
   return (
     <StyledFilter className={filtersState}>
-      {Object.getOwnPropertyNames(filtersData).map((ele, i) => {
-        return (
-          <FormControl key={i}>
-            <FormLabel
-              id={ele}
-              sx={{
-                textTransform: "capitalize",
-                fontWeight: "Bold",
-                color: "black",
-              }}
-            >
-              {ele}
-            </FormLabel>
-            <RadioGroup
-              aria-labelledby={ele}
-              name={ele}
-              onChange={(e) => {
-                searchItem(e.target.value, ele);
-              }}
-            >
-              {Object.getOwnPropertyNames(filtersData[ele]).map((ele, i) => {
-                return (
-                  ele != "undefined" && (
-                    <FormControlLabel
-                      key={i}
-                      value={ele}
-                      control={<Radio />}
-                      label={ele}
-                      sx={{ textTransform: "capitalize", fontWeight: "Bold" }}
-                    />
-                  )
-                );
-              })}
-            </RadioGroup>
-            <hr />
-          </FormControl>
-        );
-      })}
-      {Object.getOwnPropertyNames(filtersData) != "" && (
-        <Button
-          variant="outlined"
-          sx={{
-            textTransform: "capitalize",
-            marginTop: "10px",
-          }}
-          color="error"
-          onClick={() => {
-            updateBooks([]);
-          }}
-        >
-          Clear Filters
-        </Button>
-      )}
+      <RadioGroup aria-labelledby="filters" name="filters">
+        {Object.getOwnPropertyNames(filtersData) != "" && (
+          <FormControlLabel
+            value="all"
+            control={<Radio />}
+            label="Show all Books"
+            sx={{ textTransform: "capitalize", fontWeight: "Bold" }}
+            onChange={() => {
+              updateBooks([]);
+              setShowAllState(true);
+            }}
+            checked={showAllState}
+          />
+        )}
+        {Object.getOwnPropertyNames(filtersData).map((parantEle, i) => {
+          return (
+            <FormControl key={i}>
+              <FormLabel
+                id={parantEle}
+                sx={{
+                  textTransform: "capitalize",
+                  fontWeight: "Bold",
+                  color: "black",
+                }}
+              >
+                {parantEle}
+              </FormLabel>
+              {Object.getOwnPropertyNames(filtersData[parantEle]).map(
+                (ele, i) => {
+                  return (
+                    ele != "undefined" && (
+                      <FormControlLabel
+                        key={i}
+                        value={ele}
+                        control={<Radio />}
+                        label={ele}
+                        sx={{ textTransform: "capitalize", fontWeight: "Bold" }}
+                        onChange={(e) => {
+                          searchItem(e.target.value, parantEle);
+                          setShowAllState(false);
+                        }}
+                      />
+                    )
+                  );
+                }
+              )}
+              <hr />
+            </FormControl>
+          );
+        })}
+      </RadioGroup>
     </StyledFilter>
   );
 }
