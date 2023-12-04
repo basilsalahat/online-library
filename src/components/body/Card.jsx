@@ -7,7 +7,6 @@ export default function Card({ details }) {
   Card.PropsTypes = {
     details: PropTypes.object,
   };
-
   function isEmpty(value) {
     return value ? value.toString().toLowerCase() : "N/A";
   }

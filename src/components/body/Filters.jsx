@@ -1,24 +1,37 @@
 /* eslint-disable react/prop-types */
-import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import FormGroup from "@mui/material/FormGroup";
+import Checkbox from "@mui/material/Checkbox";
+import useDebounce from "../../Debounce/debounce";
 import { StyledFilter } from "./Filters.styled";
 import { useState } from "react";
 
 export default function Filters({ filtersData, updateBooks, filtersState }) {
   const [showAllState, setShowAllState] = useState(true);
-  function searchItem(value, category) {
-    Object.entries(filtersData[category]).forEach((e) => {
-      if (e[0] == value) {
-        updateBooks(e[1]);
-      }
-    });
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const handleFiltersResults = useDebounce(() => {
+    updateBooks(selectedFilters);
+  }, 700);
+
+  function handleChange(value) {
+    setShowAllState(false);
+    const index = selectedFilters.indexOf(value);
+    if (index == -1) {
+      selectedFilters.push(value);
+    } else {
+      setSelectedFilters(
+        selectedFilters.slice(0, index).concat(selectedFilters.slice(index + 1))
+      );
+    }
+    handleFiltersResults(value);
   }
+
   return (
     <StyledFilter className={filtersState}>
-      <RadioGroup aria-labelledby="filters" name="filters">
+      <FormGroup>
         {Object.getOwnPropertyNames(filtersData) != "" && (
           <FormControlLabel
             value="all"
@@ -51,13 +64,12 @@ export default function Filters({ filtersData, updateBooks, filtersState }) {
                     ele != "undefined" && (
                       <FormControlLabel
                         key={i}
-                        value={ele}
-                        control={<Radio />}
+                        control={<Checkbox />}
                         label={ele}
+                        value={ele}
                         sx={{ textTransform: "capitalize", fontWeight: "Bold" }}
                         onChange={(e) => {
-                          searchItem(e.target.value, parantEle);
-                          setShowAllState(false);
+                          handleChange(e.target.value);
                         }}
                       />
                     )
@@ -68,7 +80,7 @@ export default function Filters({ filtersData, updateBooks, filtersState }) {
             </FormControl>
           );
         })}
-      </RadioGroup>
+      </FormGroup>
     </StyledFilter>
   );
 }

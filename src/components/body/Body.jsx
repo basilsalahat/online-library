@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 export default function Body() {
   const [books, setBooks] = useState([]);
   const [filters, setFilters] = useState({});
-  const [filterdBoxList, setFilterdBoxList] = useState([]);
+  const [filterdBooksList, setfilterdBooksList] = useState([]);
   const [resultInfo, setResultInfo] = useState({});
   const [filtersState, setFiltersState] = useState("hide");
 
@@ -37,8 +37,18 @@ export default function Body() {
       ),
     });
   }
-  function filteredBooks(books) {
-    setFilterdBoxList(books);
+  function filteredBooks(filtersSelected) {
+    let result = [];
+    filtersSelected.forEach((filter) => {
+      for (const [filterCategory, value] of Object.entries(filters)) {
+        for (const [key] of Object.entries(value)) {
+          if (key == filter) {
+            result.push(filters[filterCategory][key]);
+          }
+        }
+      }
+    });
+    setfilterdBooksList(result);
   }
 
   return (
@@ -72,9 +82,9 @@ export default function Body() {
           filtersState={filtersState}
         />
         <StyledCardsContainer>
-          {Object.entries(filterdBoxList) != ""
-            ? filterdBoxList.map((ele, i) => {
-                return <Card key={i} details={ele} />;
+          {filterdBooksList.length > 0
+            ? filterdBooksList.map((ele, i) => {
+                return <Card key={i} details={ele[0]} />;
               })
             : books.map((ele, i) => {
                 return <Card key={i} details={ele} />;
