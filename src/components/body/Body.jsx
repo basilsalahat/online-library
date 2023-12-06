@@ -131,7 +131,7 @@ export default function Body() {
                 return <Card key={i} details={ele} />;
               })}
         </StyledCardsContainer>
-        {(books.length > 0 || filterdBooksList.length > 0) && (
+        {books.length > 0 && filterdBooksList.length == 0 && (
           <Pagination
             count={Math.floor(resultInfo["num"] / itemsPerPage)}
             shape="rounded"

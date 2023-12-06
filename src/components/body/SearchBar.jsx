@@ -35,12 +35,7 @@ export default function SearchBar({ result, searchStartIndex, itemsPerPage }) {
       }
       instance
         .get(
-          "?q=" +
-            searchText +
-            "&startIndex=" +
-            searchStartIndex +
-            "&maxResults=" +
-            itemsPerPage
+          `?q=${searchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
         )
         .then(function (response) {
           result(
