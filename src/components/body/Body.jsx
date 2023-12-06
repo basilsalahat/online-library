@@ -1,7 +1,7 @@
 import { StyledBody } from "./Body.styled";
 import { StyledCardsContainer } from "./Card.styled";
 import SearchBar from "./SearchBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "./Card";
 import { StyledContent } from "./Content.styled";
 import Filters from "./Filters";
@@ -63,6 +63,9 @@ export default function Body() {
     setCurrentPage(value);
     setSearchStartIndex(itemsPerPage * value);
   }
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   return (
     <StyledBody>
