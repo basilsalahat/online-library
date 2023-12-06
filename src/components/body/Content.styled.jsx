@@ -22,5 +22,15 @@ export const StyledContent = styled.div`
   }
   &.show {
     grid-template-columns: 1fr;
+    .pagination {
+      grid-area: 3 /1 / 4/ 2;
+      justify-self: center;
+      padding-top: 30px;
+    }
+  }
+  .pagination {
+    grid-area: 3 /2 / 4/ 3;
+    justify-self: center;
+    padding-top: 30px;
   }
 `;
