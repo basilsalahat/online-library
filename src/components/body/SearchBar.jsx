@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 import instance from "../../ConfigAPI/config";
 import PropTypes from "prop-types";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -11,9 +12,11 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import { StyledSearchBar } from "./SearchBar.styled";
 
-export default function SearchBar({ result }) {
+export default function SearchBar({ result, searchStartIndex, itemsPerPage }) {
   SearchBar.propTypes = {
-    result: PropTypes.object,
+    result: PropTypes.func,
+    searchStartIndex: PropTypes.number,
+    itemsPerPage: PropTypes.number,
   };
   const [text, setText] = useState("");
   const [filter, setFilter] = useState("default");
@@ -31,15 +34,27 @@ export default function SearchBar({ result }) {
         searchText = text.concat("+", filter);
       }
       instance
-        .get("?q=" + searchText)
+        .get(
+          `?q=${searchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        )
         .then(function (response) {
-          result([...response.data.items]);
+          result(
+            [...response.data.items],
+            searchText,
+            response.data.totalItems
+          );
         })
         .catch(function (error) {
           console.log(error);
         });
     }
   }
+  useEffect(() => {
+    if (text != "") {
+      handleSearch();
+    }
+  }, [itemsPerPage, searchStartIndex]);
+
   return (
     <StyledSearchBar>
       <OutlinedInput

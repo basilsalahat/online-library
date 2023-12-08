@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledCardsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   grid-auto-rows: max-content;
   gap: 22px;
   justify-items: start;
@@ -26,11 +26,13 @@ export const StyledCard = styled.div`
     align-items: flex-start;
     justify-content: space-between;
     padding: 8px 16px;
+    & p {
+      text-transform: capitalize;
+    }
     & p:first-child {
       background-color: rgba(255, 99, 71, 0.2);
       padding: 4px 8px;
       border-radius: 6px;
-      text-transform: capitalize;
     }
     & p:nth-child(2) {
       color: gray;
