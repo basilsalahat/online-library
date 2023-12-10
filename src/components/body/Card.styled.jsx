@@ -28,6 +28,7 @@ export const StyledCard = styled.div`
     padding: 8px 16px;
     & p {
       text-transform: capitalize;
+      color: black;
     }
     & p:first-child {
       background-color: rgba(255, 99, 71, 0.2);
@@ -47,5 +48,8 @@ export const StyledCard = styled.div`
   &:hover {
     transform: scale(1.025);
     box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
+  }
+  a {
+    text-decoration: none;
   }
 `;
