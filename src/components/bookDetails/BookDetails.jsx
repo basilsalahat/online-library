@@ -1,19 +1,17 @@
 import StyledBookDetails from "./BookDetails.styled";
-import Navbar from "../navbar/Navabr";
 import { useLocation } from "react-router-dom";
 
 function BookDetails() {
   const details = useLocation().state?.details;
   return (
     <>
-      <Navbar />
       <StyledBookDetails>
         <header>
           <div>
             <h1>{details.volumeInfo.title}</h1>
             <h2>{details.volumeInfo.subtitle}</h2>
             <p>
-              By{" "}
+              By&nbsp;
               <span className="publisher">{details.volumeInfo.authors[0]}</span>
               &nbsp;·&nbsp;
               <span className="publishYear">
