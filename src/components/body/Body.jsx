@@ -32,8 +32,7 @@ export default function Body() {
       const response = await instance.get(
         `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
-      const data = response;
-      return data;
+      return response;
     },
     enabled: finalSearchText != "",
   });
