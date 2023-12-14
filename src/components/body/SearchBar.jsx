@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
-import instance from "../../ConfigAPI/config";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -12,11 +11,9 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import { StyledSearchBar } from "./SearchBar.styled";
 
-export default function SearchBar({ result, searchStartIndex, itemsPerPage }) {
+export default function SearchBar({ setFinalSearchText }) {
   SearchBar.propTypes = {
-    result: PropTypes.func,
-    searchStartIndex: PropTypes.number,
-    itemsPerPage: PropTypes.number,
+    setFinalSearchText: PropTypes.func,
   };
   const [text, setText] = useState("");
   const [filter, setFilter] = useState("default");
@@ -33,27 +30,9 @@ export default function SearchBar({ result, searchStartIndex, itemsPerPage }) {
       } else {
         searchText = text.concat("+", filter);
       }
-      instance
-        .get(
-          `?q=${searchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
-        )
-        .then(function (response) {
-          result(
-            [...response.data.items],
-            searchText,
-            response.data.totalItems
-          );
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      setFinalSearchText(searchText);
     }
   }
-  useEffect(() => {
-    if (text != "") {
-      handleSearch();
-    }
-  }, [itemsPerPage, searchStartIndex]);
 
   return (
     <StyledSearchBar>
