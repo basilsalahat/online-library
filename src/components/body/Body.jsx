@@ -14,6 +14,8 @@ import Select from "@mui/material/Select";
 import Pagination from "@mui/material/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import instance from "../../ConfigAPI/config";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 export default function Body() {
   const [books, setBooks] = useState([]);
@@ -26,7 +28,7 @@ export default function Body() {
   const [currentPage, setCurrentPage] = useState(1);
   const [finalSearchText, setFinalSearchText] = useState("");
 
-  const { data } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
@@ -89,6 +91,13 @@ export default function Body() {
   return (
     <StyledBody>
       <SearchBar setFinalSearchText={setFinalSearchText} />
+      {isError && (
+        <Snackbar open>
+          <MuiAlert severity="error" sx={{ width: "100%" }}>
+            An error has occurred
+          </MuiAlert>
+        </Snackbar>
+      )}
       <StyledContent className={filtersState}>
         {resultInfo["text"] && (
           <div className="resultInfoContainer">
