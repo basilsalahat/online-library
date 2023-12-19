@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import instance from "../../ConfigAPI/config";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { useSelector } from "react-redux";
 
 export default function Body() {
   const [books, setBooks] = useState([]);
@@ -26,24 +27,25 @@ export default function Body() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchStartIndex, setSearchStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [finalSearchText, setFinalSearchText] = useState("");
+
+  const searchTest = useSelector((state) => state.searchText.value);
 
   const { data, isError } = useQuery({
-    queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
+    queryKey: ["books", { searchTest, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
-        `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        `?q=${searchTest}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
       return response;
     },
-    enabled: finalSearchText != "",
+    enabled: searchTest != "",
   });
 
   useEffect(() => {
     if (data) {
       setBooks(data.data.items);
       setResultInfo({
-        text: finalSearchText.toString(),
+        text: searchTest.toString(),
         num: data.data.totalItems.toString(),
       });
       setFilters({
@@ -64,7 +66,7 @@ export default function Body() {
         ),
       });
     }
-  }, [data, finalSearchText]);
+  }, [data, searchTest]);
 
   function filteredBooks(filtersSelected) {
     let result = [];
@@ -90,7 +92,7 @@ export default function Body() {
 
   return (
     <StyledBody>
-      <SearchBar setFinalSearchText={setFinalSearchText} />
+      <SearchBar />
       {isError && (
         <Snackbar open>
           <MuiAlert severity="error" sx={{ width: "100%" }}>
