@@ -34,30 +34,30 @@ export default function Body() {
       const response = await instance.get(
         `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
-      return response;
+      return response.data;
     },
     enabled: finalSearchText != "",
   });
 
   useEffect(() => {
     if (data) {
-      setBooks(data.data.items);
+      setBooks(data.items);
       setResultInfo({
         text: finalSearchText.toString(),
-        num: data.data.totalItems.toString(),
+        num: data.totalItems.toString(),
       });
       setFilters({
-        authors: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        authors: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.authors
             ? volumeInfo.authors.toString().toLowerCase()
             : "N/A"
         ),
-        categories: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        categories: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.categories
             ? volumeInfo.categories.toString().toLowerCase()
             : "N/A"
         ),
-        languages: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        languages: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.language
             ? volumeInfo.language.toString().toLowerCase()
             : "N/A"
