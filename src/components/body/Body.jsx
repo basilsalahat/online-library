@@ -32,7 +32,7 @@ export default function Body() {
     queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
-        `q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
       return response.data;
     },
