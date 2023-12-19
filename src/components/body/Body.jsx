@@ -28,15 +28,16 @@ export default function Body() {
   const [currentPage, setCurrentPage] = useState(1);
   const [finalSearchText, setFinalSearchText] = useState("");
 
-  const { data, isError } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
-        `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        `q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
       return response.data;
     },
     enabled: finalSearchText != "",
+    retry: false,
   });
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function Body() {
       {isError && (
         <Snackbar open>
           <MuiAlert severity="error" sx={{ width: "100%" }}>
-            An error has occurred
+            {error.message}
           </MuiAlert>
         </Snackbar>
       )}
