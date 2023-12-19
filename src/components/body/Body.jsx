@@ -12,6 +12,10 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Pagination from "@mui/material/Pagination";
+import { useQuery } from "@tanstack/react-query";
+import instance from "../../ConfigAPI/config";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 export default function Body() {
   const [books, setBooks] = useState([]);
@@ -22,29 +26,47 @@ export default function Body() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchStartIndex, setSearchStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [finalSearchText, setFinalSearchText] = useState("");
 
-  function handleState(newBooks, searchText, totalItemNum) {
-    setBooks(newBooks);
-    setResultInfo({
-      text: searchText.toString(),
-      num: totalItemNum.toString(),
-    });
-    setFilters({
-      authors: Object.groupBy(newBooks, ({ volumeInfo }) =>
-        volumeInfo.authors ? volumeInfo.authors.toString().toLowerCase() : "N/A"
-      ),
-      categories: Object.groupBy(newBooks, ({ volumeInfo }) =>
-        volumeInfo.categories
-          ? volumeInfo.categories.toString().toLowerCase()
-          : "N/A"
-      ),
-      languages: Object.groupBy(newBooks, ({ volumeInfo }) =>
-        volumeInfo.language
-          ? volumeInfo.language.toString().toLowerCase()
-          : "N/A"
-      ),
-    });
-  }
+  const { data, isError, error } = useQuery({
+    queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
+    queryFn: async () => {
+      const response = await instance.get(
+        `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+      );
+      return response.data;
+    },
+    enabled: finalSearchText != "",
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setBooks(data.items);
+      setResultInfo({
+        text: finalSearchText.toString(),
+        num: data.totalItems.toString(),
+      });
+      setFilters({
+        authors: Object.groupBy(data.items, ({ volumeInfo }) =>
+          volumeInfo.authors
+            ? volumeInfo.authors.toString().toLowerCase()
+            : "N/A"
+        ),
+        categories: Object.groupBy(data.items, ({ volumeInfo }) =>
+          volumeInfo.categories
+            ? volumeInfo.categories.toString().toLowerCase()
+            : "N/A"
+        ),
+        languages: Object.groupBy(data.items, ({ volumeInfo }) =>
+          volumeInfo.language
+            ? volumeInfo.language.toString().toLowerCase()
+            : "N/A"
+        ),
+      });
+    }
+  }, [data, finalSearchText]);
+
   function filteredBooks(filtersSelected) {
     let result = [];
     filtersSelected.forEach((filter) => {
@@ -69,11 +91,14 @@ export default function Body() {
 
   return (
     <StyledBody>
-      <SearchBar
-        result={handleState}
-        searchStartIndex={searchStartIndex}
-        itemsPerPage={itemsPerPage}
-      />
+      <SearchBar setFinalSearchText={setFinalSearchText} />
+      {isError && (
+        <Snackbar open>
+          <MuiAlert severity="error" sx={{ width: "100%" }}>
+            {error.message}
+          </MuiAlert>
+        </Snackbar>
+      )}
       <StyledContent className={filtersState}>
         {resultInfo["text"] && (
           <div className="resultInfoContainer">
