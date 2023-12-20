@@ -28,17 +28,17 @@ export default function Body() {
   const [searchStartIndex, setSearchStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const searchTest = useSelector((state) => state.searchText.value);
+  const searchText = useSelector((state) => state.searchText.value);
 
   const { data, isError, error } = useQuery({
-    queryKey: ["books", { searchTest, searchStartIndex, itemsPerPage }],
+    queryKey: ["books", { searchText, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
-        `?q=${searchTest}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        `?q=${searchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
       return response.data;
     },
-    enabled: searchTest != "",
+    enabled: searchText != "",
     retry: false,
   });
 
@@ -46,7 +46,7 @@ export default function Body() {
     if (data) {
       setBooks(data.items);
       setResultInfo({
-        text: searchTest.toString(),
+        text: searchText.toString(),
         num: data.totalItems.toString(),
       });
       setFilters({
@@ -67,7 +67,7 @@ export default function Body() {
         ),
       });
     }
-  }, [data, searchTest]);
+  }, [data, searchText]);
 
   function filteredBooks(filtersSelected) {
     let result = [];
