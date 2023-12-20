@@ -27,46 +27,49 @@ export default function Body() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchStartIndex, setSearchStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [finalSearchText, setFinalSearchText] = useState("");
 
   const searchTest = useSelector((state) => state.searchText.value);
 
-  const { data, isError } = useQuery({
-    queryKey: ["books", { searchTest, searchStartIndex, itemsPerPage }],
+  const { data, isError, error } = useQuery({
+    queryKey: ["books", { finalSearchText, searchStartIndex, itemsPerPage }],
     queryFn: async () => {
       const response = await instance.get(
-        `?q=${searchTest}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
+        `?q=${finalSearchText}&startIndex=${searchStartIndex}&maxResults=${itemsPerPage}`
       );
-      return response;
+      return response.data;
     },
-    enabled: searchTest != "",
+    enabled: finalSearchText != "",
+    retry: false,
   });
 
   useEffect(() => {
     if (data) {
-      setBooks(data.data.items);
+      setBooks(data.items);
       setResultInfo({
-        text: searchTest.toString(),
-        num: data.data.totalItems.toString(),
+        text: finalSearchText.toString(),
+        num: data.totalItems.toString(),
       });
       setFilters({
-        authors: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        authors: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.authors
             ? volumeInfo.authors.toString().toLowerCase()
             : "N/A"
         ),
-        categories: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        categories: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.categories
             ? volumeInfo.categories.toString().toLowerCase()
             : "N/A"
         ),
-        languages: Object.groupBy(data.data.items, ({ volumeInfo }) =>
+        languages: Object.groupBy(data.items, ({ volumeInfo }) =>
           volumeInfo.language
             ? volumeInfo.language.toString().toLowerCase()
             : "N/A"
         ),
       });
     }
-  }, [data, searchTest]);
+  }, [data, finalSearchText]);
+
 
   function filteredBooks(filtersSelected) {
     let result = [];
@@ -96,7 +99,7 @@ export default function Body() {
       {isError && (
         <Snackbar open>
           <MuiAlert severity="error" sx={{ width: "100%" }}>
-            An error has occurred
+            {error.message}
           </MuiAlert>
         </Snackbar>
       )}
