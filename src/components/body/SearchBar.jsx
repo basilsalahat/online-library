@@ -10,28 +10,28 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import { StyledSearchBar } from "./SearchBar.styled";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setSearchText } from "../../state/searchTextSlice";
 export default function SearchBar() {
   SearchBar.propTypes = {
     setFinalSearchText: PropTypes.func,
   };
-  const st = useSelector((state) => state.searchText.value);
   const dispatch = useDispatch();
 
   const [filter, setFilter] = useState("default");
   const [error, setError] = useState(false);
+  const [searchTextState, setSearchTextState] = useState("");
 
   function handleSearch() {
-    if (st == "") {
+    if (searchTextState == "") {
       setError(true);
     } else {
       setError(false);
       let searchText = "";
       if (filter == "default") {
-        searchText = st;
+        searchText = searchTextState;
       } else {
-        searchText = st.concat("+", filter);
+        searchText = searchTextState.concat("+", filter);
       }
       dispatch(setSearchText(searchText));
     }
@@ -48,8 +48,8 @@ export default function SearchBar() {
         }
         placeholder="Search for books, magazines and more.."
         sx={{ borderRadius: "12px" }}
-        onInput={(e) => dispatch(setSearchText(e.target.value))}
-        value={st}
+        onInput={(e) => setSearchTextState(e.target.value)}
+        value={searchTextState}
         error={error}
         onKeyDown={(e) => {
           e.key == "Enter" && handleSearch();
